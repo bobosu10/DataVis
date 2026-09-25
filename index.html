@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pirataria no Minecraft — Visualização com D3.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">TRABALHO DE VISUALIZAÇÃO DE DADOS · D3.JS</span>
+      <h1>Pirataria no Minecraft</h1>
+      <p>Análise exploratória da amostra por plataforma, idade e tipo de versão.</p>
+      <div class="method-note">
+        <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no dataset.
+        Eles não representam necessariamente todos os jogadores de Minecraft.
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="summary-grid" id="summary"></section>
+
+    <section class="card">
+      <div class="section-heading">
+        <div>
+          <span class="question">01</span>
+          <h2>Qual plataforma tem mais usuários adeptos à pirataria?</h2>
+          <p>Somente registros classificados como <strong>Cracked</strong> são considerados nesta comparação.</p>
+        </div>
+      </div>
+      <div id="platform-chart" class="chart chart-platform"></div>
+      <div class="legend">
+        <span><i class="dot pc"></i> PC — Java Edition</span>
+        <span><i class="dot mobile"></i> Mobile — Bedrock</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <div>
+          <span class="question">02</span>
+          <h2>Qual a média de idade dos jogadores adeptos à pirataria?</h2>
+          <p>Cada círculo representa um usuário Cracked. O marcador vertical indica a média da idade.</p>
+        </div>
+      </div>
+      <div id="age-chart" class="chart chart-age"></div>
+      <div class="insight" id="age-insight"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <div>
+          <span class="question">03</span>
+          <h2>Qual a relação entre usuários originais e “piratas”?</h2>
+          <p>A matriz contém um ponto para cada registro. Assim, a proporção pode ser percebida sem usar gráfico de pizza ou barras.</p>
+        </div>
+      </div>
+      <div id="version-chart" class="chart chart-version"></div>
+      <div class="legend">
+        <span><i class="square cracked"></i> Cracked</span>
+        <span><i class="square paid"></i> Paid Version</span>
+      </div>
+    </section>
+
+    <section class="card methodology">
+      <span class="question">COMO LER</span>
+      <h2>Por que essas visualizações?</h2>
+      <div class="method-grid">
+        <article>
+          <h3>Bubble / Circle Packing</h3>
+          <p>Usado para comparar PC e Mobile pela quantidade de círculos. Quanto maior o conjunto, maior a quantidade de usuários.</p>
+        </article>
+        <article>
+          <h3>Beeswarm / Dot Plot</h3>
+          <p>Mostra a distribuição das idades, permitindo enxergar concentração e dispersão, além da média.</p>
+        </article>
+        <article>
+          <h3>Waffle / Dot Matrix</h3>
+          <p>Transforma cada registro em um pequeno quadrado, tornando a relação Cracked × Paid visualmente perceptível.</p>
+        </article>
+      </div>
+      <p class="rule"><strong>Regra atendida:</strong> não foram utilizados gráfico de pizza, gráfico de barras verticais/colunas ou gráfico de linhas.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Projeto acadêmico — D3.js v7 · Dataset: piracydataset.csv</p>
+  </footer>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
