@@ -290,7 +290,7 @@ function drawVersionChart() {
 
   // Cracked ocupa o restante da matriz → rótulo à direita
   svg.append("image")
-    .attr("href", "assets/creeper.png")
+    .attr("href", "assets/creeper.webp")
     .attr("x", width - side - 34).attr("y", 10)
     .attr("width", 34).attr("height", 34);
 
