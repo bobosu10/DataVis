@@ -4,17 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pirataria no Minecraft — Visualização com D3.js</title>
+  <link rel="icon" href="assets/creeper.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="hero">
     <div class="hero-inner">
-      <span class="eyebrow">TRABALHO DE VISUALIZAÇÃO DE DADOS · D3.JS</span>
-      <h1>Pirataria no Minecraft</h1>
-      <p>Análise exploratória da amostra por plataforma, idade e tipo de versão.</p>
-      <div class="method-note">
-        <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no dataset.
-        Eles não representam necessariamente todos os jogadores de Minecraft.
+      <div class="hero-text">
+        <span class="eyebrow">TRABALHO DE VISUALIZAÇÃO DE DADOS · D3.JS</span>
+        <h1>Pirataria no Minecraft</h1>
+        <p>Análise exploratória da amostra por plataforma, idade e tipo de versão.</p>
+        <div class="method-note">
+          <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no dataset.
+          Registros com idade inferior a 5 anos foram excluídos por serem considerados dados inválidos.
+          Eles não representam necessariamente todos os jogadores de Minecraft.
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <img class="hero-block" src="assets/grass_block.png" alt="">
+        <img class="hero-bee" src="assets/bee.webp" alt="">
       </div>
     </div>
   </header>
@@ -29,11 +37,12 @@
           <h2>Qual plataforma tem mais usuários adeptos à pirataria?</h2>
           <p>Somente registros classificados como <strong>Cracked</strong> são considerados nesta comparação.</p>
         </div>
+        <img class="sec-icon" src="assets/grass_block.png" alt="">
       </div>
       <div id="platform-chart" class="chart chart-platform"></div>
       <div class="legend">
-        <span><i class="dot pc"></i> PC — Java Edition</span>
-        <span><i class="dot mobile"></i> Mobile — Bedrock</span>
+        <span><img class="lg-icon" src="assets/grass_block.png" alt=""><i class="dot pc"></i> PC — Java Edition</span>
+        <span><img class="lg-icon" src="assets/bee.webp" alt=""><i class="dot mobile"></i> Mobile — Bedrock</span>
       </div>
     </section>
 
@@ -42,8 +51,9 @@
         <div>
           <span class="question">02</span>
           <h2>Qual a média de idade dos jogadores adeptos à pirataria?</h2>
-          <p>Cada círculo representa um usuário Cracked. O marcador vertical indica a média da idade.</p>
+          <p>Cada quadradinho-círculo representa um usuário Cracked com idade válida. O marcador vertical indica a média da idade.</p>
         </div>
+        <img class="sec-icon" src="assets/bee.webp" alt="">
       </div>
       <div id="age-chart" class="chart chart-age"></div>
       <div class="insight" id="age-insight"></div>
@@ -54,13 +64,14 @@
         <div>
           <span class="question">03</span>
           <h2>Qual a relação entre usuários originais e “piratas”?</h2>
-          <p>A matriz contém um ponto para cada registro. Assim, a proporção pode ser percebida sem usar gráfico de pizza ou barras.</p>
+          <p>A matriz contém um quadrado para cada registro, em sequência: primeiro todos os <strong>Paid Version</strong>, depois todos os <strong>Cracked</strong>. Assim, a proporção pode ser percebida sem usar gráfico de pizza ou barras.</p>
         </div>
+        <img class="sec-icon" src="assets/creeper.webp" alt="">
       </div>
       <div id="version-chart" class="chart chart-version"></div>
       <div class="legend">
-        <span><i class="square cracked"></i> Cracked</span>
-        <span><i class="square paid"></i> Paid Version</span>
+        <span><img class="lg-icon" src="assets/creeper.webp" alt=""><i class="square cracked"></i> Cracked</span>
+        <span><img class="lg-icon" src="assets/diamond.png" alt=""><i class="square paid"></i> Paid Version</span>
       </div>
     </section>
 
@@ -78,7 +89,7 @@
         </article>
         <article>
           <h3>Waffle / Dot Matrix</h3>
-          <p>Transforma cada registro em um pequeno quadrado, tornando a relação Cracked × Paid visualmente perceptível.</p>
+          <p>Transforma cada registro em um pequeno quadrado, agrupados por tipo de versão, tornando a relação Cracked × Paid visualmente perceptível.</p>
         </article>
       </div>
       <p class="rule"><strong>Regra atendida:</strong> não foram utilizados gráfico de pizza, gráfico de barras verticais/colunas ou gráfico de linhas.</p>
@@ -86,7 +97,8 @@
   </main>
 
   <footer>
-    <p>Projeto acadêmico — D3.js v7 · Dataset: piracydataset.csv</p>
+    <img class="foot-icon" src="assets/creeper.webp" alt="">
+    <p>Projeto acadêmico — D3.js v7 · Dataset: NewDataSetMinecraft.csv</p>
   </footer>
 
   <script type="module" src="script.js"></script>
