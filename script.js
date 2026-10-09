@@ -29,14 +29,17 @@ const paidPct = paid.length / total * 100;
 
 const fmt = d3.format(",d");
 const pct = d3.format(".2f");
+// Os valores do CSV estão em inglês; a interface mostra tudo em português
+const clientText = c => c.includes("Computer") ? "Computador" : c.includes("Mobile") ? "Celular" : c;
+const versionText = v => v === "Cracked" ? "Pirata" : v === "Paid Version" ? "Original (paga)" : v;
 const ageText = d => Number.isFinite(d.age) ? `${d.age} anos` : "não informada";
 
 // ---------- Summary ----------
 const summary = [
   ["Registros", fmt(total)],
-  ["Usuários Cracked", fmt(pirates.length)],
-  ["Idade média dos Cracked", meanAge.toFixed(2) + " anos"],
-  ["Cracked × Paid", (pirates.length / paid.length).toFixed(2) + " : 1"]
+  ["Usuários piratas", fmt(pirates.length)],
+  ["Idade média dos piratas", meanAge.toFixed(2) + " anos"],
+  ["Piratas × Originais", (pirates.length / paid.length).toFixed(2) + " : 1"]
 ];
 
 d3.select("#summary")
@@ -52,7 +55,7 @@ d3.select("#summary")
 d3.select("#age-insight").html(
   `<strong>Média encontrada:</strong> ${meanAge.toFixed(2)} anos.
    A média foi calculada sobre os ${fmt(piratesWithAge.length)}
-   registros <strong>Cracked</strong> com idade válida (≥ ${MIN_VALID_AGE} anos)` +
+   registros <strong>piratas</strong> com idade válida (≥ ${MIN_VALID_AGE} anos)` +
   (missingAge > 0
     ? `; ${fmt(missingAge)} registro${missingAge > 1 ? "s" : ""} sem idade informada ${missingAge > 1 ? "ficaram" : "ficou"} de fora desta análise.`
     : ".")
@@ -84,8 +87,8 @@ function drawPlatformChart() {
     .attr("viewBox", `0 0 ${width} ${height}`);
 
   const groups = [
-    { name: "PC — Java Edition", short: "PC", value: pcPirates.length, color: "var(--accent)" },
-    { name: "Mobile — Bedrock", short: "Mobile", value: mobilePirates.length, color: "var(--accent-2)" }
+    { name: "Computador — Java Edition", short: "PC", value: pcPirates.length, color: "var(--accent)" },
+    { name: "Celular — Bedrock", short: "Celular", value: mobilePirates.length, color: "var(--accent-2)" }
   ];
 
   const root = d3.hierarchy({ children: groups })
@@ -109,8 +112,8 @@ function drawPlatformChart() {
     .on("mousemove", (event, d) => {
       showTooltip(event,
         `<strong>${d.data.name}</strong><br>
-         ${fmt(d.data.value)} usuários Cracked<br>
-         ${pct(d.data.value / pirates.length * 100)}% dos usuários Cracked`
+         ${fmt(d.data.value)} usuários piratas<br>
+         ${pct(d.data.value / pirates.length * 100)}% dos usuários piratas`
       );
     })
     .on("mouseleave", hideTooltip);
@@ -225,7 +228,7 @@ function drawAgeChart() {
     .attr("stroke", "#000")
     .attr("stroke-width", .8)
     .on("mousemove", (event, d) => {
-      showTooltip(event, `<strong>Idade:</strong> ${d.age} anos<br>${d.client}`);
+      showTooltip(event, `<strong>Idade:</strong> ${d.age} anos<br>${clientText(d.client)}`);
     })
     .on("mouseleave", hideTooltip);
 }
@@ -236,7 +239,7 @@ function drawVersionChart() {
   const width = Math.max(600, el.clientWidth);
 
   // Ordem sequencial (sem seguir o id do dataset):
-  // primeiro TODOS os Paid Version, depois TODOS os Cracked.
+  // primeiro TODOS os Paid Version (originais), depois TODOS os Cracked (piratas).
   const ordered = [...paid, ...pirates];
 
   const columns = 50;
@@ -269,8 +272,8 @@ function drawVersionChart() {
     .style("cursor", "pointer")
     .on("mousemove", (event, d) => {
       showTooltip(event,
-        `<strong>${d.version}</strong><br>
-         Plataforma: ${d.client}<br>
+        `<strong>${versionText(d.version)}</strong><br>
+         Plataforma: ${clientText(d.client)}<br>
          Idade: ${ageText(d)}`
       );
     })
@@ -286,7 +289,7 @@ function drawVersionChart() {
     .attr("x", side + 44)
     .attr("y", 34)
     .attr("fill", "var(--accent-2)")
-    .text(`PAID — ${fmt(paid.length)} (${pct(paidPct)}%)`);
+    .text(`ORIGINAIS — ${fmt(paid.length)} (${pct(paidPct)}%)`);
 
   // Cracked ocupa o restante da matriz → rótulo à direita
   svg.append("image")
@@ -299,14 +302,14 @@ function drawVersionChart() {
     .attr("y", 34)
     .attr("text-anchor", "end")
     .attr("fill", "var(--danger)")
-    .text(`CRACKED — ${fmt(pirates.length)} (${pct(piratePct)}%)`);
+    .text(`PIRATAS — ${fmt(pirates.length)} (${pct(piratePct)}%)`);
 
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", top + matrixHeight + 32)
     .attr("text-anchor", "middle")
     .attr("fill", "var(--muted)")
-    .text(`${fmt(total)} registros — 1 quadrado = 1 usuário — primeiro Paid Version, depois Cracked`);
+    .text(`${fmt(total)} registros — 1 quadrado = 1 usuário — primeiro originais, depois piratas`);
 }
 
 drawPlatformChart();

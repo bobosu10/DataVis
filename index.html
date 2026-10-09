@@ -11,23 +11,108 @@
   <header class="hero">
     <div class="hero-inner">
       <div class="hero-text">
-        <span class="eyebrow">TRABALHO DE VISUALIZAÇÃO DE DADOS · D3.JS</span>
+        <span class="eyebrow">Trabalho de visualização de dados com D3.js</span>
         <h1>Pirataria no Minecraft</h1>
-        <p>Análise exploratória da amostra por plataforma, idade e tipo de versão.</p>
+        <p>Antes dos números, um panorama: o que a pirataria põe em risco e por que tanta gente recorre a ela. Depois, uma análise da amostra por plataforma, idade e tipo de versão.</p>
         <div class="method-note">
-          <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no dataset.
+          <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no conjunto de dados.
           Registros com idade inferior a 5 anos foram excluídos por serem considerados dados inválidos.
           Eles não representam necessariamente todos os jogadores de Minecraft.
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
-        <img class="hero-block" src="assets/grass_block.png" alt="">
-        <img class="hero-bee" src="assets/bee.webp" alt="">
+        <img class="hero-block" src="assets/pngtree-mindcraft-clipart-minecraft-pixel-art-illustration-with-trees-and-houses-and-vector-png-image_6811740.png" alt="">
+        <img class="hero-bee hero-bee-2" src="assets/yellow-bee-in-minecraft-so-cute-png.webp" alt="">
       </div>
     </div>
   </header>
 
   <main>
+    <!-- ================= CONTEXTO (rolagem contínua) ================= -->
+    <section class="card ctx-intro" id="contexto" aria-labelledby="ctx-titulo">
+      <img class="ctx-logo" src="assets/minecraft_PNG60.png" alt="Logotipo do Minecraft">
+      <div>
+        <h2 id="ctx-titulo">Antes dos dados: o que está em jogo?</h2>
+        <p class="big">Pirataria é usar um jogo (ou outras formas de midias como filmes) sem pagar e sem autorização.</p>
+      </div>
+    </section>
+
+    <section class="card ctx-block ctx-risk" aria-labelledby="ctx-riscos">
+      <div class="ctx-title">
+        <img src="assets/minecraft_PNG11.png" alt="">
+        <h3 id="ctx-riscos">Riscos digitais</h3>
+      </div>
+      <p class="big">Cracks e launchers não oficiais são porta de entrada para ameaças.</p>
+      <div class="threats">
+        <article class="threat">
+          <img class="threat-img" src="assets/minecraft_PNG1.png" alt="">
+          <h4>Trojans e ransomware</h4>
+          <p>O Minecraft é usado como isca, segundo a Kaspersky.</p>
+        </article>
+        <article class="threat">
+          <img class="threat-img" src="assets/diamond.png" alt="">
+          <h4>Mineração escondida</h4>
+          <p>Computador lento e anúncios invasivos.</p>
+        </article>
+        <article class="threat">
+          <img class="threat-img" src="assets/images.jpg" alt="">
+          <h4>Roubo de dados</h4>
+          <p>Keyloggers levam senhas, e-mails e dados bancários.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card ctx-block ctx-eco" aria-labelledby="ctx-economia">
+      <div class="ctx-title">
+        <img src="assets/COFFRE-MINECRAFT.png" alt="">
+        <h3 id="ctx-economia">Impacto econômico</h3>
+      </div>
+      <p class="big">Estudo da União Europeia (EUIPO/JRC): a pirataria pode reduzir as vendas de jogos pagos.</p>
+      <div class="threats threats-2">
+        <article class="threat">
+          <h4>Grandes estúdios</h4>
+          <p>Absorvem o impacto com microtransações e assinaturas.</p>
+        </article>
+        <article class="threat">
+          <h4>Estúdios independentes</h4>
+          <p>Sofrem mais nas primeiras semanas de lançamento.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card ctx-block ctx-market" aria-labelledby="ctx-mercado">
+      <div class="ctx-title">
+        <img src="assets/minecraft_PNG12.png" alt="">
+        <h3 id="ctx-mercado">Mercado e acesso</h3>
+      </div>
+      <p class="big">Para Gabe Newell, pirataria é falha de serviço.</p>
+      <div class="ctx-video-row">
+        <figure class="video-frame">
+          <div class="video-ratio">
+            <iframe src="https://www.youtube-nocookie.com/embed/qRa6oFU8XIg" title="Gabe Newell comenta a pirataria na Rússia" loading="lazy"
+              allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <figcaption>Gabe Newell comenta a pirataria na Rússia.</figcaption>
+        </figure>
+        <div class="threats threats-col">
+          <article class="threat">
+            <h4>As barreiras</h4>
+            <p>Preço regional alto, pagamento restrito, jogo indisponível.</p>
+          </article>
+          <article class="threat">
+            <h4>A resposta</h4>
+            <p>Assinaturas e jogos gratuitos: acessíveis e seguros.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="bridge" aria-label="Transição para os dados">
+      <img src="assets/creeper.webp" alt="">
+      <p>Agora, os dados do Minecraft.</p>
+    </section>
+
+    <!-- ================= DADOS ================= -->
     <section class="summary-grid" id="summary"></section>
 
     <section class="card">
@@ -35,14 +120,14 @@
         <div>
           <span class="question">01</span>
           <h2>Qual plataforma tem mais usuários adeptos à pirataria?</h2>
-          <p>Somente registros classificados como <strong>Cracked</strong> são considerados nesta comparação.</p>
+          <p>Somente registros classificados como <strong>piratas</strong> são considerados nesta comparação.</p>
         </div>
         <img class="sec-icon" src="assets/grass_block.png" alt="">
       </div>
       <div id="platform-chart" class="chart chart-platform"></div>
       <div class="legend">
-        <span><img class="lg-icon" src="assets/grass_block.png" alt=""><i class="dot pc"></i> PC — Java Edition</span>
-        <span><img class="lg-icon" src="assets/bee.webp" alt=""><i class="dot mobile"></i> Mobile — Bedrock</span>
+        <span><img class="lg-icon" src="assets/grass_block.png" alt=""><i class="dot pc"></i> Computador — Java Edition</span>
+        <span><img class="lg-icon" src="assets/bee.webp" alt=""><i class="dot mobile"></i> Celular — Bedrock</span>
       </div>
     </section>
 
@@ -51,9 +136,9 @@
         <div>
           <span class="question">02</span>
           <h2>Qual a média de idade dos jogadores adeptos à pirataria?</h2>
-          <p>Cada quadradinho-círculo representa um usuário Cracked com idade válida. O marcador vertical indica a média da idade.</p>
+          <p>Cada círculo representa um usuário pirata com idade válida. A linha vertical indica a média de idade.</p>
         </div>
-        <img class="sec-icon" src="assets/bee.webp" alt="">
+        <img class="sec-icon" src="assets/yellow-bee-in-minecraft-so-cute-png.webp" alt="">
       </div>
       <div id="age-chart" class="chart chart-age"></div>
       <div class="insight" id="age-insight"></div>
@@ -64,14 +149,14 @@
         <div>
           <span class="question">03</span>
           <h2>Qual a relação entre usuários originais e “piratas”?</h2>
-          <p>A matriz contém um quadrado para cada registro, em sequência: primeiro todos os <strong>Paid Version</strong>, depois todos os <strong>Cracked</strong>. Assim, a proporção pode ser percebida sem usar gráfico de pizza ou barras.</p>
+          <p>A matriz contém um quadrado para cada registro, em sequência: primeiro todos os <strong>originais</strong> (versão paga), depois todos os <strong>piratas</strong>. Assim, a proporção pode ser percebida sem usar gráfico de pizza ou barras.</p>
         </div>
         <img class="sec-icon" src="assets/creeper.webp" alt="">
       </div>
       <div id="version-chart" class="chart chart-version"></div>
       <div class="legend">
-        <span><img class="lg-icon" src="assets/creeper.webp" alt=""><i class="square cracked"></i> Cracked</span>
-        <span><img class="lg-icon" src="assets/diamond.png" alt=""><i class="square paid"></i> Paid Version</span>
+        <span><img class="lg-icon" src="assets/creeper.webp" alt=""><i class="square cracked"></i> Pirata</span>
+        <span><img class="lg-icon" src="assets/diamond.png" alt=""><i class="square paid"></i> Original (versão paga)</span>
       </div>
     </section>
 
@@ -80,16 +165,16 @@
       <h2>Por que essas visualizações?</h2>
       <div class="method-grid">
         <article>
-          <h3>Bubble / Circle Packing</h3>
-          <p>Usado para comparar PC e Mobile pela quantidade de círculos. Quanto maior o conjunto, maior a quantidade de usuários.</p>
+          <h3>Bolhas (empacotamento circular)</h3>
+          <p>Usado para comparar computador e celular pelo tamanho dos círculos. Quanto maior o círculo, maior a quantidade de usuários.</p>
         </article>
         <article>
-          <h3>Beeswarm / Dot Plot</h3>
+          <h3>Enxame de pontos</h3>
           <p>Mostra a distribuição das idades, permitindo enxergar concentração e dispersão, além da média.</p>
         </article>
         <article>
-          <h3>Waffle / Dot Matrix</h3>
-          <p>Transforma cada registro em um pequeno quadrado, agrupados por tipo de versão, tornando a relação Cracked × Paid visualmente perceptível.</p>
+          <h3>Matriz de quadrados (waffle)</h3>
+          <p>Transforma cada registro em um pequeno quadrado, agrupados por tipo de versão, tornando a relação entre piratas e originais visualmente perceptível.</p>
         </article>
       </div>
     </section>
@@ -97,7 +182,7 @@
 
   <footer>
     <img class="foot-icon" src="assets/creeper.webp" alt="">
-    <p>Projeto acadêmico — D3.js v7 · Dataset: NewDataSetMinecraft.csv</p>
+    <p>Projeto acadêmico — D3.js v7 · Conjunto de dados: NewDataSetMinecraft.csv</p>
   </footer>
 
   <script type="module" src="script.js"></script>
