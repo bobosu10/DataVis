@@ -15,9 +15,9 @@
         <h1>Pirataria no Minecraft</h1>
         <p>Antes dos números, um panorama: o que a pirataria põe em risco e por que tanta gente recorre a ela. Depois, uma análise da amostra por plataforma, idade e tipo de versão.</p>
         <div class="method-note">
-          <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no conjunto de dados.
-          Registros com idade inferior a 5 anos foram excluídos por serem considerados dados inválidos.
-          Eles não representam necessariamente todos os jogadores de Minecraft.
+          <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no CSV.
+          Idades inferiores a 5 anos são excluídas das análises; a tabela mantém todas as linhas.
+          A amostra não representa necessariamente todos os jogadores de Minecraft.
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
@@ -33,7 +33,7 @@
       <img class="ctx-logo" src="assets/minecraft_PNG60.png" alt="Logotipo do Minecraft">
       <div>
         <h2 id="ctx-titulo">Antes dos dados: o que está em jogo?</h2>
-        <p class="big">Pirataria é usar um jogo (ou outras formas de midias como filmes) sem pagar e sem autorização.</p>
+        <p class="big">Pirataria é usar ou distribuir um jogo sem autorização dos titulares dos direitos.</p>
       </div>
     </section>
 
@@ -42,22 +42,22 @@
         <img src="assets/minecraft_PNG11.png" alt="">
         <h3 id="ctx-riscos">Riscos digitais</h3>
       </div>
-      <p class="big">Cracks e launchers não oficiais são porta de entrada para ameaças.</p>
+      <p class="big">Downloads de fontes não confiáveis podem trazer riscos; isso não significa que todo arquivo não oficial seja malicioso.</p>
       <div class="threats">
         <article class="threat">
           <img class="threat-img" src="assets/minecraft_PNG1.png" alt="">
           <h4>Trojans e ransomware</h4>
-          <p>O Minecraft é usado como isca, segundo a Kaspersky.</p>
+          <p>Malwares podem danificar arquivos ou bloquear o acesso. Evite executar instaladores desconhecidos.</p>
         </article>
         <article class="threat">
           <img class="threat-img" src="assets/diamond.png" alt="">
           <h4>Mineração escondida</h4>
-          <p>Computador lento e anúncios invasivos.</p>
+          <p>Um programa malicioso pode consumir recursos do dispositivo sem consentimento.</p>
         </article>
         <article class="threat">
           <img class="threat-img" src="assets/images.jpg" alt="">
           <h4>Roubo de dados</h4>
-          <p>Keyloggers levam senhas, e-mails e dados bancários.</p>
+          <p>Alguns malwares tentam capturar senhas e outros dados pessoais.</p>
         </article>
       </div>
     </section>
@@ -67,15 +67,15 @@
         <img src="assets/COFFRE-MINECRAFT.png" alt="">
         <h3 id="ctx-economia">Impacto econômico</h3>
       </div>
-      <p class="big">Estudo da União Europeia (EUIPO/JRC): a pirataria pode reduzir as vendas de jogos pagos.</p>
+      <p class="big">Este dataset descreve usuários e versões; não mede vendas perdidas nem permite concluir causa e efeito.</p>
       <div class="threats threats-2">
         <article class="threat">
-          <h4>Grandes estúdios</h4>
-          <p>Absorvem o impacto com microtransações e assinaturas.</p>
+          <h4>O que medimos</h4>
+          <p>Registros e categorias presentes no CSV, como plataforma e versão.</p>
         </article>
         <article class="threat">
-          <h4>Estúdios independentes</h4>
-          <p>Sofrem mais nas primeiras semanas de lançamento.</p>
+          <h4>O que não medimos</h4>
+          <p>Vendas, renda ou perdas econômicas; seriam necessários outros dados e métodos.</p>
         </article>
       </div>
     </section>
@@ -92,7 +92,7 @@
             <iframe src="https://www.youtube-nocookie.com/embed/qRa6oFU8XIg" title="Gabe Newell comenta a pirataria na Rússia" loading="lazy"
               allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
-          <figcaption>Gabe Newell comenta a pirataria na Rússia.</figcaption>
+          <figcaption>Gabe Newell comenta a pirataria na Rússia. <a href="https://www.youtube.com/watch?v=qRa6oFU8XIg" target="_blank" rel="noreferrer">Assistir no YouTube</a>.</figcaption>
         </figure>
         <div class="threats threats-col">
           <article class="threat">
@@ -109,11 +109,71 @@
 
     <section class="bridge" aria-label="Transição para os dados">
       <img src="assets/creeper.webp" alt="">
-      <p>Agora, os dados do Minecraft.</p>
+      <p>Agora, os dados do dataset do Minecraft.</p>
     </section>
 
     <!-- ================= DADOS ================= -->
     <section class="summary-grid" id="summary"></section>
+    <div class="insight analysis-note" id="analysis-note" role="note"></div>
+
+    <section class="dataset-panel" aria-labelledby="dataset-title">
+      <div class="dataset-heading">
+        <div>
+          <h2 id="dataset-title">Dataset completo</h2>
+          <p id="dataset-description">Todas as linhas do CSV, sem os identificadores de Discord e Minecraft. Use a busca e os filtros para explorar os registros.</p>
+        </div>
+        <span class="dataset-count" id="dataset-count"></span>
+      </div>
+      <div class="dataset-tools">
+        <label class="dataset-search" for="dataset-search">
+          Buscar
+          <input id="dataset-search" type="search" placeholder="Registro, idade, plataforma ou versão" autocomplete="off">
+        </label>
+        <label for="platform-filter">Plataforma
+          <select id="platform-filter">
+            <option value="">Todas</option>
+            <option value="Computer">Computador</option>
+            <option value="Mobile">Celular</option>
+          </select>
+        </label>
+        <label for="version-filter">Versão
+          <select id="version-filter">
+            <option value="">Todas</option>
+            <option value="Cracked">Pirata</option>
+            <option value="Paid Version">Original (paga)</option>
+          </select>
+        </label>
+        <button id="dataset-reset" type="button">Limpar filtros</button>
+        <button id="dataset-download" type="button">Baixar CSV filtrado</button>
+      </div>
+      <div class="dataset-scroll" role="region" aria-label="Tabela completa do dataset" tabindex="0">
+        <table class="dataset-table" aria-describedby="dataset-description">
+          <thead>
+            <tr>
+              <th scope="col">Registro</th>
+              <th scope="col">Idade</th>
+              <th scope="col">Plataforma</th>
+              <th scope="col">Versão</th>
+            </tr>
+          </thead>
+          <tbody id="dataset-rows"></tbody>
+        </table>
+      </div>
+      <div class="dataset-pagination">
+        <p id="dataset-results" role="status" aria-live="polite"></p>
+        <div>
+          <label for="page-size">Linhas por página</label>
+          <select id="page-size">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <button id="dataset-prev" type="button" aria-label="Página anterior">Anterior</button>
+          <span id="dataset-page"></span>
+          <button id="dataset-next" type="button" aria-label="Próxima página">Próxima</button>
+        </div>
+      </div>
+    </section>
 
     <section class="card">
       <div class="section-heading">
@@ -160,6 +220,12 @@
       </div>
     </section>
 
+    <section class="card conclusion" aria-labelledby="conclusion-title">
+      <span class="question">RESUMO</span>
+      <h2 id="conclusion-title">O que os dados mostram?</h2>
+      <p id="conclusion-text" class="big"></p>
+    </section>
+
     <section class="card methodology">
       <span class="question">COMO LER</span>
       <h2>Por que essas visualizações?</h2>
@@ -177,6 +243,16 @@
           <p>Transforma cada registro em um pequeno quadrado, agrupados por tipo de versão, tornando a relação entre piratas e originais visualmente perceptível.</p>
         </article>
       </div>
+    </section>
+
+    <section class="card sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">Fontes e limites</h2>
+      <ul>
+        <li><strong>Dados:</strong> arquivo <code>NewDataSetMinecraft.csv</code> fornecido com o projeto. Os cálculos são feitos a partir dos registros desse arquivo.</li>
+        <li><strong>Segurança digital:</strong> <a href="https://consumer.ftc.gov/articles/how-recognize-remove-avoid-malware" target="_blank" rel="noreferrer">Federal Trade Commission — como reconhecer, remover e evitar malware</a>. Orientação geral; não é uma pesquisa específica sobre Minecraft.</li>
+        <li><strong>Comentário de Gabe Newell:</strong> <a href="https://www.youtube.com/watch?v=qRa6oFU8XIg" target="_blank" rel="noreferrer">vídeo no YouTube</a>.</li>
+      </ul>
+      <p class="source-limit">As visualizações são descritivas. Elas não estimam prevalência entre todos os jogadores, não provam causalidade e não medem impacto econômico.</p>
     </section>
   </main>
 

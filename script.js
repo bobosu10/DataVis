@@ -2,7 +2,8 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 const MIN_VALID_AGE = 5; // idades menores que 5 são consideradas dados inválidos
 
-const raw = await d3.csv("NewDataSetMinecraft.csv", d => ({
+const raw = await d3.csv("NewDataSetMinecraft.csv", (d, i) => ({
+  row: i + 1,
   age: d.age === "" || d.age == null ? NaN : +d.age,
   client: d.client.trim(),
   version: d.version.trim()
@@ -39,7 +40,7 @@ const summary = [
   ["Registros", fmt(total)],
   ["Usuários piratas", fmt(pirates.length)],
   ["Idade média dos piratas", meanAge.toFixed(2) + " anos"],
-  ["Piratas × Originais", (pirates.length / paid.length).toFixed(2) + " : 1"]
+  ["Piratas por original", (pirates.length / paid.length).toFixed(2) + " : 1"]
 ];
 
 d3.select("#summary")
@@ -51,6 +52,137 @@ d3.select("#summary")
     <div class="stat-label">${label}</div>
     <div class="stat-value">${value}</div>
   `);
+
+d3.select("#dataset-count").text(`${fmt(raw.length)} registros`);
+
+d3.select("#analysis-note").html(
+  `<strong>Como os números foram calculados:</strong> ${fmt(total)} de ${fmt(raw.length)} registros entram nas análises` +
+  (raw.length - total > 0
+    ? `; ${fmt(raw.length - total)} com idade abaixo de ${MIN_VALID_AGE} foram excluídos das análises.`
+    : `; nenhum registro com idade abaixo de ${MIN_VALID_AGE} foi encontrado.`) +
+  ` Registros sem idade continuam nas contagens de plataforma e versão, mas não entram na média. ` +
+  `A média considera ${fmt(piratesWithAge.length)} usuários piratas com idade informada e válida (≥ ${MIN_VALID_AGE}). ` +
+  `A tabela mantém todas as ${fmt(raw.length)} linhas do CSV.`
+);
+
+const leadingPlatform = pcPirates.length >= mobilePirates.length
+  ? { name: "computador", count: pcPirates.length }
+  : { name: "celular", count: mobilePirates.length };
+
+d3.select("#conclusion-text").text(
+  `Nesta amostra, ${fmt(pirates.length)} de ${fmt(total)} registros (${pct(piratePct)}%) estão classificados como piratas. ` +
+  `Entre eles, a plataforma mais frequente é ${leadingPlatform.name} (${fmt(leadingPlatform.count)} de ${fmt(pirates.length)}, ` +
+  `${pct(leadingPlatform.count / pirates.length * 100)}%). A idade média dos piratas com idade válida é ${meanAge.toFixed(2)} anos, ` +
+  `e há ${(pirates.length / paid.length).toFixed(2)} usuários piratas para cada original. ` +
+  `Esses resultados descrevem somente o CSV e não demonstram causalidade nem representam necessariamente todos os jogadores.`
+);
+
+const datasetBody = d3.select("#dataset-rows");
+const datasetSearch = d3.select("#dataset-search");
+const platformFilter = d3.select("#platform-filter");
+const versionFilter = d3.select("#version-filter");
+const pageSizeSelect = d3.select("#page-size");
+let currentPage = 1;
+
+function getFilteredRows() {
+  const query = datasetSearch.property("value").trim().toLocaleLowerCase("pt-BR");
+  const platform = platformFilter.property("value");
+  const version = versionFilter.property("value");
+
+  return raw.filter(d => {
+    const matchesPlatform = !platform || d.client.includes(platform);
+    const matchesVersion = !version || d.version === version;
+    const searchable = [
+      d.row,
+      Number.isFinite(d.age) ? d.age : "não informada",
+      clientText(d.client),
+      versionText(d.version)
+    ].join(" ").toLocaleLowerCase("pt-BR");
+
+    return matchesPlatform && matchesVersion && (!query || searchable.includes(query));
+  });
+}
+
+function updateDataset() {
+  const filteredRows = getFilteredRows();
+  const pageSize = +pageSizeSelect.property("value");
+  const pageCount = Math.max(1, Math.ceil(filteredRows.length / pageSize));
+  currentPage = Math.min(currentPage, pageCount);
+  const start = (currentPage - 1) * pageSize;
+  const pageRows = filteredRows.slice(start, start + pageSize);
+
+  const tableRows = datasetBody.selectAll("tr")
+    .data(pageRows, d => d.row)
+    .join(
+      enter => {
+        const row = enter.append("tr");
+        row.append("th").attr("scope", "row").attr("class", "row-number");
+        row.append("td").attr("class", "row-age");
+        row.append("td").attr("class", "row-platform");
+        row.append("td").attr("class", "row-version");
+        return row;
+      }
+    );
+
+  tableRows.select(".row-number").text(d => fmt(d.row));
+  tableRows.select(".row-age").text(d => Number.isFinite(d.age) ? d.age : "Não informada");
+  tableRows.select(".row-platform").text(d => clientText(d.client));
+  tableRows.select(".row-version").text(d => versionText(d.version));
+
+  const shownFrom = filteredRows.length ? start + 1 : 0;
+  const shownTo = Math.min(start + pageSize, filteredRows.length);
+  d3.select("#dataset-results").text(
+    `Exibindo ${fmt(shownFrom)}–${fmt(shownTo)} de ${fmt(filteredRows.length)} resultados (${fmt(raw.length)} registros no CSV).`
+  );
+  d3.select("#dataset-page").text(`Página ${currentPage} de ${pageCount}`);
+  d3.select("#dataset-prev").property("disabled", currentPage <= 1);
+  d3.select("#dataset-next").property("disabled", currentPage >= pageCount);
+  d3.select("#dataset-download").property("disabled", filteredRows.length === 0);
+}
+
+function resetDatasetPage() {
+  currentPage = 1;
+  updateDataset();
+}
+
+datasetSearch.on("input", resetDatasetPage);
+platformFilter.on("change", resetDatasetPage);
+versionFilter.on("change", resetDatasetPage);
+pageSizeSelect.on("change", resetDatasetPage);
+d3.select("#dataset-prev").on("click", () => {
+  currentPage -= 1;
+  updateDataset();
+});
+d3.select("#dataset-next").on("click", () => {
+  currentPage += 1;
+  updateDataset();
+});
+d3.select("#dataset-reset").on("click", () => {
+  datasetSearch.property("value", "");
+  platformFilter.property("value", "");
+  versionFilter.property("value", "");
+  pageSizeSelect.property("value", "25");
+  resetDatasetPage();
+});
+d3.select("#dataset-download").on("click", () => {
+  const rows = getFilteredRows().map(d => ({
+    "Registro": d.row,
+    "Idade": Number.isFinite(d.age) ? d.age : "Não informada",
+    "Plataforma": clientText(d.client),
+    "Versão": versionText(d.version)
+  }));
+  const csv = d3.csvFormat(rows, ["Registro", "Idade", "Plataforma", "Versão"]);
+  const blob = new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "minecraft-dataset-filtrado.csv";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+updateDataset();
 
 d3.select("#age-insight").html(
   `<strong>Média encontrada:</strong> ${meanAge.toFixed(2)} anos.

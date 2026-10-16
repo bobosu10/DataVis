@@ -1,39 +1,39 @@
-# Pirataria no Minecraft — Dashboard D3.js
+# Pirataria no Minecraft — visualização com D3.js
 
-Projeto de visualização de dados desenvolvido com D3.js a partir do arquivo `piracydataset.csv`.
+Apresentação acadêmica em português sobre os registros de `NewDataSetMinecraft.csv`. A página combina contexto, indicadores, gráficos D3 e uma tabela interativa do conjunto de dados.
 
-## Contexto (antes dos dados)
+## Como executar
 
-Seção de abertura com barra de itens estilo Minecraft e três painéis: riscos digitais (malware, mineração, roubo de credenciais), impacto econômico e mercado/acesso (com o vídeo de Gabe Newell incorporado). A lógica das abas fica em `context.js`.
-
-## Perguntas respondidas
-
-1. Qual plataforma tem mais usuários adeptos à pirataria?
-2. Qual a média de idade dos jogadores adeptos à pirataria?
-3. Qual a relação de usuários que jogam a versão original em comparação com a versão "pirata"?
-
-## Resultados calculados
-
-- Total de registros: 1423
-- Piratas (Cracked): 1156 (81.24%)
-- Originais (Paid Version): 267 (18.76%)
-- Piratas no computador: 974
-- Piratas no celular: 182
-- Média de idade dos usuários piratas: 16.68 anos
-- Relação piratas : originais: 4.33 : 1
-
-## Visualizações
-
-### 01 — Bolhas (empacotamento circular)
-Compara computador e celular usando o tamanho de círculos. O número dentro do círculo também informa a quantidade.
-
-### 02 — Enxame de pontos
-Cada ponto representa um usuário pirata. A posição horizontal representa a idade e a linha tracejada representa a média.
-
-### 03 — Matriz de quadrados (waffle)
-Cada quadrado representa um registro. A distribuição entre piratas e originais permite perceber a proporção sem usar pizza.
-
+Sirva a pasta por HTTP para que o navegador carregue o CSV e o módulo D3:
 
 ```bash
 python -m http.server 8000
 ```
+
+Depois, abra `http://localhost:8000`.
+
+## O que a apresentação mostra
+
+- **01 — Plataforma:** compara computador e celular entre os registros piratas.
+- **02 — Idade:** apresenta a distribuição das idades dos usuários piratas e a média.
+- **03 — Tipo de versão:** compara os registros piratas e originais em uma matriz de quadrados.
+- **Dataset completo:** permite buscar, filtrar por plataforma e versão, paginar e baixar os resultados filtrados como CSV.
+
+Os valores são calculados no navegador a partir do arquivo CSV. Na tabela e no CSV exportado, os identificadores de Discord e Minecraft são omitidos.
+
+## Resultados deste arquivo
+
+- Registros no CSV: **1.397**
+- Usuários piratas: **1.135** (aproximadamente **81,25%**)
+- Usuários originais: **262** (aproximadamente **18,75%**)
+- Piratas no computador: **958**
+- Piratas no celular: **177**
+- Idade média dos piratas com idade válida (≥ 5 anos): **16,96 anos**
+- Proporção: **4,33 usuários piratas para cada original**
+
+Registros com idade abaixo de 5 anos são excluídos das análises, mas permanecem na tabela do CSV. Registros sem idade podem entrar nas contagens de plataforma e versão, mas não na média de idade. Os resultados descrevem somente este arquivo; não representam necessariamente toda a população de jogadores e não demonstram causalidade ou perdas econômicas.
+
+## Fontes de contexto
+
+- Federal Trade Commission, [How To Recognize, Remove, and Avoid Malware](https://consumer.ftc.gov/articles/how-recognize-remove-avoid-malware) — orientação geral de segurança, não uma pesquisa específica sobre Minecraft.
+- [Vídeo de Gabe Newell sobre pirataria](https://www.youtube.com/watch?v=qRa6oFU8XIg).
