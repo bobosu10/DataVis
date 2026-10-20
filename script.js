@@ -209,69 +209,77 @@ function hideTooltip() {
   tooltip.style("opacity", 0);
 }
 
-// ---------- 01. Bubble / Circle Packing ----------
+// ---------- 01. Pictogram ----------
 function drawPlatformChart() {
   const el = document.querySelector("#platform-chart");
   const width = Math.max(600, el.clientWidth);
-  const height = 390;
+  const height = 250;
+  const unit = 50;
+  const labelWidth = 190;
+  const iconStep = 30;
+  const columns = Math.max(1, Math.floor((width - labelWidth - 32) / iconStep));
 
   const svg = d3.select(el).append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`);
 
   const groups = [
-    { name: "Computador — Java Edition", short: "PC", value: pcPirates.length, color: "var(--accent)" },
-    { name: "Celular — Bedrock", short: "Celular", value: mobilePirates.length, color: "var(--accent-2)" }
+    { name: "Computador", detail: "Java Edition", value: pcPirates.length, color: "var(--accent)" },
+    { name: "Celular", detail: "Bedrock", value: mobilePirates.length, color: "var(--accent-2)" }
   ];
 
-  const root = d3.hierarchy({ children: groups })
-    .sum(d => d.value);
-
-  d3.pack()
-    .size([width - 80, height - 60])
-    .padding(22)(root);
-
-  const nodes = root.leaves();
-
-  const g = svg.append("g")
-    .attr("transform", `translate(40,30)`);
-
-  const node = g.selectAll(".platform-node")
-    .data(nodes)
+  const category = svg.selectAll(".platform-category")
+    .data(groups)
     .join("g")
-    .attr("class", "platform-node")
-    .attr("transform", d => `translate(${d.x},${d.y})`)
-    .style("cursor", "pointer")
-    .on("mousemove", (event, d) => {
-      showTooltip(event,
-        `<strong>${d.data.name}</strong><br>
-         ${fmt(d.data.value)} usuários piratas<br>
-         ${pct(d.data.value / pirates.length * 100)}% dos usuários piratas`
-      );
-    })
-    .on("mouseleave", hideTooltip);
+    .attr("class", "platform-category")
+    .attr("transform", (_, i) => `translate(18,${42 + i * 100})`);
 
-  node.append("circle")
-    .attr("r", d => d.r)
-    .attr("fill", d => d.data.color)
-    .attr("fill-opacity", 1)
-    .attr("stroke", "#000")
-    .attr("stroke-opacity", 1)
-    .attr("stroke-width", 4);
-
-  node.append("text")
+  category.append("text")
     .attr("class", "platform-label")
-    .attr("dy", -5)
-    .text(d => d.data.short);
+    .attr("x", 0)
+    .attr("y", 12)
+    .attr("text-anchor", "start")
+    .text(d => d.name);
 
-  node.append("text")
-    .attr("class", "platform-number")
-    .attr("dy", 27)
-    .text(d => fmt(d.data.value));
+  category.append("text")
+    .attr("class", "platform-count")
+    .attr("x", 0)
+    .attr("y", 40)
+    .attr("text-anchor", "start")
+    .text(d => `${fmt(d.value)} usuários · ${pct(d.value / pirates.length * 100)}%`);
 
-  node.append("text")
-    .attr("class", "platform-percent")
-    .attr("dy", 48)
-    .text(d => pct(d.data.value / pirates.length * 100) + "%");
+  category.each(function(d) {
+    const iconCount = Math.round(d.value / unit);
+    const icons = d3.select(this).append("g")
+      .attr("class", "pictogram-icons")
+      .attr("transform", `translate(${labelWidth},0)`)
+      .selectAll(".pictogram-person")
+      .data(d3.range(iconCount))
+      .join("g")
+      .attr("class", "pictogram-person")
+      .attr("transform", i => `translate(${(i % columns) * iconStep},${Math.floor(i / columns) * 34})`)
+      .attr("fill", d.color)
+      .attr("stroke", "#000")
+      .attr("stroke-width", 1.5);
+
+    icons.append("rect").attr("x", 7).attr("y", 0).attr("width", 10).attr("height", 10);
+    icons.append("rect").attr("x", 5).attr("y", 11).attr("width", 14).attr("height", 11);
+    icons.append("rect").attr("x", 1).attr("y", 12).attr("width", 4).attr("height", 9);
+    icons.append("rect").attr("x", 19).attr("y", 12).attr("width", 4).attr("height", 9);
+    icons.append("rect").attr("x", 6).attr("y", 23).attr("width", 5).attr("height", 9);
+    icons.append("rect").attr("x", 13).attr("y", 23).attr("width", 5).attr("height", 9);
+
+    d3.select(this)
+      .style("cursor", "help")
+      .on("mousemove", event => {
+        showTooltip(event,
+          `<strong>${d.name} — ${d.detail}</strong><br>
+           ${fmt(d.value)} usuários piratas<br>
+           ${pct(d.value / pirates.length * 100)}% dos usuários piratas<br>
+           Cada personagem representa aproximadamente ${unit} usuários`
+        );
+      })
+      .on("mouseleave", hideTooltip);
+  });
 }
 
 // ---------- 02. Beeswarm / Dot Plot ----------
@@ -370,9 +378,14 @@ function drawVersionChart() {
   const el = document.querySelector("#version-chart");
   const width = Math.max(600, el.clientWidth);
 
-  // Ordem sequencial (sem seguir o id do dataset):
-  // primeiro TODOS os Paid Version (originais), depois TODOS os Cracked (piratas).
-  const ordered = [...paid, ...pirates];
+  const byIncreasingAge = rows => [...rows].sort((a, b) => {
+    const aHasAge = Number.isFinite(a.age);
+    const bHasAge = Number.isFinite(b.age);
+    if (aHasAge !== bHasAge) return aHasAge ? -1 : 1;
+    if (aHasAge && a.age !== b.age) return a.age - b.age;
+    return a.row - b.row;
+  });
+  const ordered = [...byIncreasingAge(pirates), ...byIncreasingAge(paid)];
 
   const columns = 50;
   const gap = 3;
@@ -411,21 +424,21 @@ function drawVersionChart() {
     })
     .on("mouseleave", hideTooltip);
 
-  // Paid Version vem primeiro (canto superior esquerdo) → rótulo à esquerda
+  // Cracked vem primeiro (canto superior esquerdo) → rótulo à esquerda
   svg.append("image")
-    .attr("href", "assets/diamond.png")
+    .attr("href", "assets/creeper.webp")
     .attr("x", side).attr("y", 10)
     .attr("width", 34).attr("height", 34);
 
   svg.append("text")
     .attr("x", side + 44)
     .attr("y", 34)
-    .attr("fill", "var(--accent-2)")
-    .text(`ORIGINAIS — ${fmt(paid.length)} (${pct(paidPct)}%)`);
+    .attr("fill", "var(--danger)")
+    .text(`PIRATAS — ${fmt(pirates.length)} (${pct(piratePct)}%)`);
 
-  // Cracked ocupa o restante da matriz → rótulo à direita
+  // Paid Version ocupa o restante da matriz → rótulo à direita
   svg.append("image")
-    .attr("href", "assets/creeper.webp")
+    .attr("href", "assets/diamond.png")
     .attr("x", width - side - 34).attr("y", 10)
     .attr("width", 34).attr("height", 34);
 
@@ -433,17 +446,61 @@ function drawVersionChart() {
     .attr("x", width - side - 44)
     .attr("y", 34)
     .attr("text-anchor", "end")
-    .attr("fill", "var(--danger)")
-    .text(`PIRATAS — ${fmt(pirates.length)} (${pct(piratePct)}%)`);
+    .attr("fill", "var(--accent-2)")
+    .text(`ORIGINAIS — ${fmt(paid.length)} (${pct(paidPct)}%)`);
 
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", top + matrixHeight + 32)
     .attr("text-anchor", "middle")
     .attr("fill", "var(--muted)")
-    .text(`${fmt(total)} registros — 1 quadrado = 1 usuário — primeiro originais, depois piratas`);
+    .text(`${fmt(total)} registros — 1 quadrado = 1 usuário — primeiro piratas, depois originais`);
 }
 
 drawPlatformChart();
 drawAgeChart();
 drawVersionChart();
+
+// ---------- Carrossel de imagens ----------
+const carouselImages = [
+  { src: "assets/youtubePirata1.png", alt: "Imagem 1 de 4 sobre pirataria no Minecraft" },
+  { src: "assets/youtubePirata2.png", alt: "Imagem 2 de 4 sobre pirataria no Minecraft" },
+  { src: "assets/youtubepirata3.png", alt: "Imagem 3 de 4 sobre pirataria no Minecraft" },
+  { src: "assets/youtubepirata4.png", alt: "Imagem 4 de 4 sobre pirataria no Minecraft" }
+];
+const carouselImage = d3.select("#carousel-image");
+const carouselStatus = d3.select("#carousel-status");
+const imageDialog = document.querySelector("#image-dialog");
+let activeSlide = 0;
+
+function showSlide(index) {
+  activeSlide = (index + carouselImages.length) % carouselImages.length;
+  const image = carouselImages[activeSlide];
+  carouselImage.attr("src", image.src).attr("alt", image.alt);
+  carouselStatus.text(`Imagem ${activeSlide + 1} de ${carouselImages.length}`);
+  d3.selectAll(".carousel-thumbnails button")
+    .attr("aria-current", (_, i) => i === activeSlide ? "true" : null);
+}
+
+d3.select("#carousel-prev").on("click", () => showSlide(activeSlide - 1));
+d3.select("#carousel-next").on("click", () => showSlide(activeSlide + 1));
+d3.selectAll(".carousel-thumbnails button").on("click", function() {
+  showSlide(+this.dataset.slide);
+});
+
+d3.select("#carousel-zoom").on("click", () => {
+  d3.select("#dialog-image")
+    .attr("src", carouselImages[activeSlide].src)
+    .attr("alt", carouselImages[activeSlide].alt);
+  imageDialog.showModal();
+});
+d3.select("#image-dialog-close").on("click", () => imageDialog.close());
+imageDialog.addEventListener("click", event => {
+  if (event.target === imageDialog) imageDialog.close();
+});
+
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  window.setInterval(() => {
+    if (!imageDialog.open && document.visibilityState === "visible") showSlide(activeSlide + 1);
+  }, 5000);
+}

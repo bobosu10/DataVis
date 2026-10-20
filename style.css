@@ -162,7 +162,7 @@ h3 { margin-top: 0; font-size: clamp(1.3rem, 1.6vw, 1.6rem); color: var(--accent
 
 .chart { width: 100%; overflow: hidden; margin-top: 10px;
   background: rgba(0,0,0,.35); border: 4px solid #000; }
-.chart-platform { min-height: 390px; }
+.chart-platform { min-height: 250px; }
 .chart-age { min-height: 430px; }
 .chart-version { min-height: 520px; }
 svg { display: block; width: 100%; height: auto; }
@@ -172,9 +172,8 @@ svg text { font-family: 'VT323', monospace; font-size: 28px; }
 .axis text { fill: var(--muted); font-size: 26px; }
 .grid line { stroke: #777; opacity: .35; }
 
-.platform-label  { fill: #fff; font-size: 26px !important; text-anchor: middle; paint-order: stroke; stroke: #000; stroke-width: 4px; }
-.platform-number { fill: #fff; font-size: 40px !important; text-anchor: middle; paint-order: stroke; stroke: #000; stroke-width: 5px; }
-.platform-percent{ fill: #fff; font-size: 22px !important; text-anchor: middle; paint-order: stroke; stroke: #000; stroke-width: 4px; }
+.platform-label { fill: #fff; font-size: 26px !important; paint-order: stroke; stroke: #000; stroke-width: 4px; }
+.platform-count { fill: var(--warning); font-size: 23px !important; paint-order: stroke; stroke: #000; stroke-width: 3px; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 14px; color: var(--text); font-size: 1.8rem; }
 .dot, .square { display: inline-block; width: 16px; height: 16px; margin-right: 8px;
@@ -224,6 +223,9 @@ footer {
   .dataset-heading { align-items: flex-start; flex-direction: column; }
   .threat { padding: 18px 14px; }
   .threat p { font-size: 1.7rem; }
+  .carousel { gap: 6px; }
+  .carousel-control { min-width: 38px; min-height: 42px; }
+  .carousel-image-button { min-height: 180px; padding: 4px; }
 }
 
 /* ---------- Imagens ---------- */
@@ -288,6 +290,20 @@ svg image { image-rendering: pixelated; }
 .video-ratio { position: relative; aspect-ratio: 16 / 9; background: #000; border: 4px solid #000; box-shadow: 0 6px 0 rgba(0,0,0,.4); }
 .video-ratio iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .video-frame figcaption { margin-top: 12px; color: var(--muted); font-size: 1.8rem; }
+
+.carousel { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; margin-top: 20px; }
+.carousel-image-button { display: grid; place-items: center; min-height: 240px; padding: 10px; background: #1b1b1b; border: 4px solid #000; box-shadow: inset 4px 4px 0 #444, inset -4px -4px 0 #111; cursor: zoom-in; }
+.carousel-image-button img { display: block; max-width: 100%; width: auto; max-height: 520px; object-fit: contain; }
+.carousel-control, .dialog-close { min-width: 48px; min-height: 48px; color: #fff; font: inherit; font-size: 1.8rem; background: #555; border: 3px solid #000; box-shadow: inset 3px 3px 0 #777, inset -3px -3px 0 #222; cursor: pointer; }
+.carousel-status { margin: 10px 0 0; text-align: center; color: var(--muted); font-size: 1.7rem; }
+.carousel-thumbnails { display: flex; justify-content: center; gap: 12px; margin: 10px 0 28px; }
+.carousel-thumbnails button { width: 18px; height: 18px; padding: 0; background: #777; border: 3px solid #000; cursor: pointer; }
+.carousel-thumbnails button[aria-current="true"] { background: var(--warning); box-shadow: 0 0 0 2px #fff; }
+.gallery-video { max-width: 1000px; margin: 0 auto; }
+.image-dialog { position: fixed; width: min(94vw, 1400px); max-width: none; max-height: 92vh; padding: 52px 16px 16px; overflow: auto; background: #242424; border: 4px solid #000; box-shadow: 0 0 0 100vmax rgba(0,0,0,.8); }
+.image-dialog::backdrop { background: rgba(0,0,0,.8); }
+.image-dialog img { display: block; width: 100%; max-height: calc(92vh - 76px); object-fit: contain; }
+.dialog-close { position: absolute; top: 8px; right: 8px; }
 
 .bridge { display: flex; align-items: center; gap: 20px; justify-content: center; margin: 8px 0 4px; padding: 22px 24px; background: #c6c6c6; color: #222; border: 4px solid #000; box-shadow: inset 4px 4px 0 #fff, inset -4px -4px 0 #555; }
 .bridge img { width: 64px; height: 64px; flex: 0 0 auto; }

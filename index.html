@@ -180,7 +180,7 @@
         <div>
           <span class="question">01</span>
           <h2>Qual plataforma tem mais usuários adeptos à pirataria?</h2>
-          <p>Somente registros classificados como <strong>piratas</strong> são considerados nesta comparação.</p>
+          <p>O pictograma compara os registros <strong>piratas</strong> por plataforma. Cada personagem representa aproximadamente 50 usuários; os valores exatos aparecem ao lado.</p>
         </div>
         <img class="sec-icon" src="assets/grass_block.png" alt="">
       </div>
@@ -204,12 +204,49 @@
       <div class="insight" id="age-insight"></div>
     </section>
 
+    <section class="card media-gallery" aria-labelledby="gallery-title">
+      <div class="section-heading">
+        <div>
+          <span class="question">GALERIA</span>
+          <h2 id="gallery-title">Imagens sobre pirataria no Minecraft</h2>
+          <p>As imagens passam automaticamente. Selecione uma para ampliar.</p>
+        </div>
+        <img class="sec-icon" src="assets/diamond.png" alt="">
+      </div>
+      <div class="carousel" aria-label="Carrossel de imagens">
+        <button class="carousel-control" id="carousel-prev" type="button" aria-label="Imagem anterior">◀</button>
+        <button class="carousel-image-button" id="carousel-zoom" type="button" aria-label="Ampliar imagem atual">
+          <img id="carousel-image" src="assets/youtubePirata1.png" alt="Imagem 1 de 4 sobre pirataria no Minecraft">
+        </button>
+        <button class="carousel-control" id="carousel-next" type="button" aria-label="Próxima imagem">▶</button>
+      </div>
+      <p class="carousel-status" id="carousel-status" aria-live="polite">Imagem 1 de 4</p>
+      <div class="carousel-thumbnails" aria-label="Selecionar imagem">
+        <button type="button" data-slide="0" aria-label="Mostrar imagem 1" aria-current="true"></button>
+        <button type="button" data-slide="1" aria-label="Mostrar imagem 2"></button>
+        <button type="button" data-slide="2" aria-label="Mostrar imagem 3"></button>
+        <button type="button" data-slide="3" aria-label="Mostrar imagem 4"></button>
+      </div>
+      <figure class="video-frame gallery-video">
+        <div class="video-ratio">
+          <iframe src="https://www.youtube-nocookie.com/embed/nIh1nvqlAYI" title="Vídeo sobre pirataria no Minecraft" loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <figcaption>Vídeo sobre pirataria no Minecraft. <a href="https://youtu.be/nIh1nvqlAYI" target="_blank" rel="noreferrer">Assistir no YouTube</a>.</figcaption>
+      </figure>
+    </section>
+
+    <dialog class="image-dialog" id="image-dialog" aria-label="Imagem ampliada">
+      <button class="dialog-close" id="image-dialog-close" type="button" aria-label="Fechar imagem ampliada">✕</button>
+      <img id="dialog-image" alt="">
+    </dialog>
+
     <section class="card">
       <div class="section-heading">
         <div>
           <span class="question">03</span>
           <h2>Qual a relação entre usuários originais e “piratas”?</h2>
-          <p>A matriz contém um quadrado para cada registro, em sequência: primeiro todos os <strong>originais</strong> (versão paga), depois todos os <strong>piratas</strong>. Assim, a proporção pode ser percebida sem usar gráfico de pizza ou barras.</p>
+          <p>A matriz contém um quadrado para cada registro, em sequência por idade crescente: primeiro todos os <strong>piratas</strong> (vermelhos), do mais novo ao mais velho; depois todos os <strong>originais</strong> (azuis), também do mais novo ao mais velho. Idades não informadas ficam ao final de cada grupo.</p>
         </div>
         <img class="sec-icon" src="assets/creeper.webp" alt="">
       </div>
@@ -231,8 +268,8 @@
       <h2>Por que essas visualizações?</h2>
       <div class="method-grid">
         <article>
-          <h3>Bolhas (empacotamento circular)</h3>
-          <p>Usado para comparar computador e celular pelo tamanho dos círculos. Quanto maior o círculo, maior a quantidade de usuários.</p>
+          <h3>Pictograma por plataforma</h3>
+          <p>Compara os usuários piratas de computador e celular por personagens repetidos; cada personagem representa aproximadamente 50 usuários e os valores exatos são informados.</p>
         </article>
         <article>
           <h3>Enxame de pontos</h3>
@@ -240,7 +277,7 @@
         </article>
         <article>
           <h3>Matriz de quadrados (waffle)</h3>
-          <p>Transforma cada registro em um pequeno quadrado, agrupados por tipo de versão, tornando a relação entre piratas e originais visualmente perceptível.</p>
+          <p>Transforma cada registro em um pequeno quadrado, agrupado primeiro por pirataria e depois por versão original; cada grupo segue a ordem crescente de idade.</p>
         </article>
       </div>
     </section>

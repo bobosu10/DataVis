@@ -14,9 +14,10 @@ Depois, abra `http://localhost:8000`.
 
 ## O que a apresentação mostra
 
-- **01 — Plataforma:** compara computador e celular entre os registros piratas.
+- **01 — Plataforma:** compara computador e celular entre os registros piratas com um pictograma D3.js (aproximadamente 50 usuários por personagem).
 - **02 — Idade:** apresenta a distribuição das idades dos usuários piratas e a média.
-- **03 — Tipo de versão:** compara os registros piratas e originais em uma matriz de quadrados.
+- **Galeria:** carrossel automático com as quatro imagens de `assets/`; clique na imagem para ampliá-la. O vídeo relacionado está incorporado logo abaixo.
+- **03 — Tipo de versão:** compara os registros piratas e originais em uma matriz de quadrados; cada grupo está ordenado por idade crescente e idades ausentes ficam no final.
 - **Dataset completo:** permite buscar, filtrar por plataforma e versão, paginar e baixar os resultados filtrados como CSV.
 
 Os valores são calculados no navegador a partir do arquivo CSV. Na tabela e no CSV exportado, os identificadores de Discord e Minecraft são omitidos.
