@@ -21,6 +21,7 @@
 
   --accent: #5fbf3a;     /* grama / PC */
   --accent-2: #3fe0d0;   /* diamante / Mobile e Paid */
+  --mobile: #f28c28;     /* laranja / Mobile */
   --warning: #fcdb05;    /* ouro */
   --danger: #e8402f;     /* redstone / Cracked */
 }
@@ -178,7 +179,7 @@ svg text { font-family: 'VT323', monospace; font-size: 28px; }
 .legend { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 14px; color: var(--text); font-size: 1.8rem; }
 .dot, .square { display: inline-block; width: 16px; height: 16px; margin-right: 8px;
   vertical-align: -2px; border: 2px solid #000; border-radius: 0; }
-.pc { background: var(--accent); } .mobile { background: var(--accent-2); }
+.pc { background: var(--accent); } .mobile { background: var(--mobile); }
 .cracked { background: var(--danger); } .paid { background: var(--accent-2); }
 
 .mean-line { stroke: var(--warning); stroke-width: 4; stroke-dasharray: 8 6; }

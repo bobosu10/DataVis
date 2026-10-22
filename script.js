@@ -1,6 +1,6 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-const MIN_VALID_AGE = 5; // idades menores que 5 são consideradas dados inválidos
+const MIN_ANALYSIS_AGE = 12;
 
 const raw = await d3.csv("NewDataSetMinecraft.csv", (d, i) => ({
   row: i + 1,
@@ -9,9 +9,9 @@ const raw = await d3.csv("NewDataSetMinecraft.csv", (d, i) => ({
   version: d.version.trim()
 }));
 
-// Segurança extra: descarta qualquer registro com idade informada < 5.
-// (registros sem idade continuam nas análises que não dependem da idade)
-const data = raw.filter(d => !(Number.isFinite(d.age) && d.age < MIN_VALID_AGE));
+const data = raw.filter(d => Number.isFinite(d.age) && d.age >= MIN_ANALYSIS_AGE);
+const excludedUnderAge = raw.filter(d => Number.isFinite(d.age) && d.age < MIN_ANALYSIS_AGE).length;
+const excludedWithoutAge = raw.length - data.length - excludedUnderAge;
 
 const pirates = data.filter(d => d.version === "Cracked");
 const paid = data.filter(d => d.version === "Paid Version");
@@ -19,11 +19,7 @@ const paid = data.filter(d => d.version === "Paid Version");
 const pcPirates = pirates.filter(d => d.client.includes("Computer"));
 const mobilePirates = pirates.filter(d => d.client.includes("Mobile"));
 
-// Idade só é analisada nos registros com idade válida
-const piratesWithAge = pirates.filter(d => Number.isFinite(d.age) && d.age >= MIN_VALID_AGE);
-const missingAge = pirates.length - piratesWithAge.length;
-
-const meanAge = d3.mean(piratesWithAge, d => d.age);
+const meanAge = d3.mean(pirates, d => d.age);
 const total = data.length;
 const piratePct = pirates.length / total * 100;
 const paidPct = paid.length / total * 100;
@@ -33,8 +29,6 @@ const pct = d3.format(".2f");
 // Os valores do CSV estão em inglês; a interface mostra tudo em português
 const clientText = c => c.includes("Computer") ? "Computador" : c.includes("Mobile") ? "Celular" : c;
 const versionText = v => v === "Cracked" ? "Pirata" : v === "Paid Version" ? "Original (paga)" : v;
-const ageText = d => Number.isFinite(d.age) ? `${d.age} anos` : "não informada";
-
 // ---------- Summary ----------
 const summary = [
   ["Registros", fmt(total)],
@@ -53,16 +47,13 @@ d3.select("#summary")
     <div class="stat-value">${value}</div>
   `);
 
-d3.select("#dataset-count").text(`${fmt(raw.length)} registros`);
+d3.select("#dataset-count").text(`${fmt(data.length)} registros (idade ≥ ${MIN_ANALYSIS_AGE})`);
 
 d3.select("#analysis-note").html(
-  `<strong>Como os números foram calculados:</strong> ${fmt(total)} de ${fmt(raw.length)} registros entram nas análises` +
-  (raw.length - total > 0
-    ? `; ${fmt(raw.length - total)} com idade abaixo de ${MIN_VALID_AGE} foram excluídos das análises.`
-    : `; nenhum registro com idade abaixo de ${MIN_VALID_AGE} foi encontrado.`) +
-  ` Registros sem idade continuam nas contagens de plataforma e versão, mas não entram na média. ` +
-  `A média considera ${fmt(piratesWithAge.length)} usuários piratas com idade informada e válida (≥ ${MIN_VALID_AGE}). ` +
-  `A tabela mantém todas as ${fmt(raw.length)} linhas do CSV.`
+  `<strong>Como os números foram calculados:</strong> são considerados ${fmt(total)} de ${fmt(raw.length)} registros do CSV, ` +
+  `somente os que têm idade informada e igual ou superior a ${MIN_ANALYSIS_AGE} anos. ` +
+  `${fmt(excludedUnderAge)} registros com menos de ${MIN_ANALYSIS_AGE} anos e ${fmt(excludedWithoutAge)} sem idade válida ` +
+  `ficam fora de todas as análises. A tabela e a exportação seguem o mesmo filtro.`
 );
 
 const leadingPlatform = pcPirates.length >= mobilePirates.length
@@ -72,7 +63,7 @@ const leadingPlatform = pcPirates.length >= mobilePirates.length
 d3.select("#conclusion-text").text(
   `Nesta amostra, ${fmt(pirates.length)} de ${fmt(total)} registros (${pct(piratePct)}%) estão classificados como piratas. ` +
   `Entre eles, a plataforma mais frequente é ${leadingPlatform.name} (${fmt(leadingPlatform.count)} de ${fmt(pirates.length)}, ` +
-  `${pct(leadingPlatform.count / pirates.length * 100)}%). A idade média dos piratas com idade válida é ${meanAge.toFixed(2)} anos, ` +
+  `${pct(leadingPlatform.count / pirates.length * 100)}%). A idade média dos piratas com idade ≥ ${MIN_ANALYSIS_AGE} anos é ${meanAge.toFixed(2)} anos, ` +
   `e há ${(pirates.length / paid.length).toFixed(2)} usuários piratas para cada original. ` +
   `Esses resultados descrevem somente o CSV e não demonstram causalidade nem representam necessariamente todos os jogadores.`
 );
@@ -89,7 +80,7 @@ function getFilteredRows() {
   const platform = platformFilter.property("value");
   const version = versionFilter.property("value");
 
-  return raw.filter(d => {
+  return data.filter(d => {
     const matchesPlatform = !platform || d.client.includes(platform);
     const matchesVersion = !version || d.version === version;
     const searchable = [
@@ -132,7 +123,8 @@ function updateDataset() {
   const shownFrom = filteredRows.length ? start + 1 : 0;
   const shownTo = Math.min(start + pageSize, filteredRows.length);
   d3.select("#dataset-results").text(
-    `Exibindo ${fmt(shownFrom)}–${fmt(shownTo)} de ${fmt(filteredRows.length)} resultados (${fmt(raw.length)} registros no CSV).`
+    `Exibindo ${fmt(shownFrom)}–${fmt(shownTo)} de ${fmt(filteredRows.length)} resultados; ` +
+    `${fmt(data.length)} registros analisados (idade ≥ ${MIN_ANALYSIS_AGE}).`
   );
   d3.select("#dataset-page").text(`Página ${currentPage} de ${pageCount}`);
   d3.select("#dataset-prev").property("disabled", currentPage <= 1);
@@ -186,11 +178,8 @@ updateDataset();
 
 d3.select("#age-insight").html(
   `<strong>Média encontrada:</strong> ${meanAge.toFixed(2)} anos.
-   A média foi calculada sobre os ${fmt(piratesWithAge.length)}
-   registros <strong>piratas</strong> com idade válida (≥ ${MIN_VALID_AGE} anos)` +
-  (missingAge > 0
-    ? `; ${fmt(missingAge)} registro${missingAge > 1 ? "s" : ""} sem idade informada ${missingAge > 1 ? "ficaram" : "ficou"} de fora desta análise.`
-    : ".")
+   A média foi calculada sobre os ${fmt(pirates.length)}
+   registros <strong>piratas</strong> analisados, todos com idade ≥ ${MIN_ANALYSIS_AGE} anos.`
 );
 
 const tooltip = d3.select("body")
@@ -223,8 +212,8 @@ function drawPlatformChart() {
     .attr("viewBox", `0 0 ${width} ${height}`);
 
   const groups = [
-    { name: "Computador", detail: "Java Edition", value: pcPirates.length, color: "var(--accent)" },
-    { name: "Celular", detail: "Bedrock", value: mobilePirates.length, color: "var(--accent-2)" }
+    { name: "Computador", value: pcPirates.length, color: "var(--accent)" },
+    { name: "Celular", value: mobilePirates.length, color: "var(--mobile)" }
   ];
 
   const category = svg.selectAll(".platform-category")
@@ -267,18 +256,6 @@ function drawPlatformChart() {
     icons.append("rect").attr("x", 19).attr("y", 12).attr("width", 4).attr("height", 9);
     icons.append("rect").attr("x", 6).attr("y", 23).attr("width", 5).attr("height", 9);
     icons.append("rect").attr("x", 13).attr("y", 23).attr("width", 5).attr("height", 9);
-
-    d3.select(this)
-      .style("cursor", "help")
-      .on("mousemove", event => {
-        showTooltip(event,
-          `<strong>${d.name} — ${d.detail}</strong><br>
-           ${fmt(d.value)} usuários piratas<br>
-           ${pct(d.value / pirates.length * 100)}% dos usuários piratas<br>
-           Cada personagem representa aproximadamente ${unit} usuários`
-        );
-      })
-      .on("mouseleave", hideTooltip);
   });
 }
 
@@ -286,11 +263,12 @@ function drawPlatformChart() {
 function drawAgeChart() {
   const el = document.querySelector("#age-chart");
   const width = Math.max(600, el.clientWidth);
-  const margin = { top: 50, right: 30, bottom: 70, left: 30 };
-  const r = 3.5;
+  const margin = { top: 50, right: 30, bottom: 95, left: 30 };
+  const r = 3.8;
+  const verticalScale = 1.3;
 
-  // Somente idades válidas (>= 5 anos); cópias para a simulação não alterar os dados originais
-  const nodes = piratesWithAge.map(d => ({ ...d }));
+  // Cópias para a simulação não alterarem os dados originais
+  const nodes = pirates.map(d => ({ ...d }));
 
   const x = d3.scaleLinear()
     .domain([
@@ -319,9 +297,11 @@ function drawAgeChart() {
   const dy = plotTop - yMin;
 
   const svg = d3.select(el).append("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`);
+    .attr("viewBox", `0 0 ${width} ${height * verticalScale}`);
+  const chart = svg.append("g")
+    .attr("transform", `scale(1,${verticalScale})`);
 
-  svg.append("g")
+  chart.append("g")
     .attr("class", "grid")
     .selectAll("line")
     .data(x.ticks(20))
@@ -331,39 +311,39 @@ function drawAgeChart() {
     .attr("y1", margin.top - 10)
     .attr("y2", axisY);
 
-  svg.append("g")
+  chart.append("g")
     .attr("class", "axis")
     .attr("transform", `translate(0,${axisY})`)
     .call(d3.axisBottom(x).ticks(20).tickFormat(d3.format("d")));
 
-  svg.append("text")
+  chart.append("text")
     .attr("x", width / 2)
     .attr("y", axisY + 50)
     .attr("text-anchor", "middle")
     .attr("fill", "var(--muted)")
     .text("Idade (anos)");
 
-  svg.append("line")
+  chart.append("line")
     .attr("class", "mean-line")
     .attr("x1", x(meanAge))
     .attr("x2", x(meanAge))
     .attr("y1", margin.top - 10)
     .attr("y2", axisY);
 
-  svg.append("text")
+  chart.append("text")
     .attr("class", "mean-label")
     .attr("x", x(meanAge) + 8)
     .attr("y", margin.top - 16)
     .text(`Média: ${meanAge.toFixed(2)} anos`);
 
-  svg.selectAll(".age-dot")
+  chart.selectAll(".age-dot")
     .data(nodes)
     .join("circle")
     .attr("class", "age-dot")
     .attr("cx", d => d.x)
     .attr("cy", d => d.y + dy)
     .attr("r", r)
-    .attr("fill", "var(--accent)")
+    .attr("fill", d => d.client.includes("Computer") ? "var(--accent)" : "var(--mobile)")
     .attr("fill-opacity", .75)
     .attr("stroke", "#000")
     .attr("stroke-width", .8)
@@ -378,13 +358,7 @@ function drawVersionChart() {
   const el = document.querySelector("#version-chart");
   const width = Math.max(600, el.clientWidth);
 
-  const byIncreasingAge = rows => [...rows].sort((a, b) => {
-    const aHasAge = Number.isFinite(a.age);
-    const bHasAge = Number.isFinite(b.age);
-    if (aHasAge !== bHasAge) return aHasAge ? -1 : 1;
-    if (aHasAge && a.age !== b.age) return a.age - b.age;
-    return a.row - b.row;
-  });
+  const byIncreasingAge = rows => [...rows].sort((a, b) => a.age - b.age || a.row - b.row);
   const ordered = [...byIncreasingAge(pirates), ...byIncreasingAge(paid)];
 
   const columns = 50;
@@ -419,7 +393,7 @@ function drawVersionChart() {
       showTooltip(event,
         `<strong>${versionText(d.version)}</strong><br>
          Plataforma: ${clientText(d.client)}<br>
-         Idade: ${ageText(d)}`
+         Idade: ${d.age} anos`
       );
     })
     .on("mouseleave", hideTooltip);

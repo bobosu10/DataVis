@@ -16,7 +16,7 @@
         <p>Antes dos números, um panorama: o que a pirataria põe em risco e por que tanta gente recorre a ela. Depois, uma análise da amostra por plataforma, idade e tipo de versão.</p>
         <div class="method-note">
           <strong>Nota metodológica:</strong> os resultados descrevem apenas os registros presentes no CSV.
-          Idades inferiores a 5 anos são excluídas das análises; a tabela mantém todas as linhas.
+          São analisados somente registros com idade informada igual ou superior a 12 anos.
           A amostra não representa necessariamente todos os jogadores de Minecraft.
         </div>
       </div>
@@ -119,8 +119,8 @@
     <section class="dataset-panel" aria-labelledby="dataset-title">
       <div class="dataset-heading">
         <div>
-          <h2 id="dataset-title">Dataset completo</h2>
-          <p id="dataset-description">Todas as linhas do CSV, sem os identificadores de Discord e Minecraft. Use a busca e os filtros para explorar os registros.</p>
+          <h2 id="dataset-title">Dataset analisado</h2>
+          <p id="dataset-description">Registros com idade informada igual ou superior a 12 anos, sem os identificadores de Discord e Minecraft. Use a busca e os filtros para explorar os registros.</p>
         </div>
         <span class="dataset-count" id="dataset-count"></span>
       </div>
@@ -146,7 +146,7 @@
         <button id="dataset-reset" type="button">Limpar filtros</button>
         <button id="dataset-download" type="button">Baixar CSV filtrado</button>
       </div>
-      <div class="dataset-scroll" role="region" aria-label="Tabela completa do dataset" tabindex="0">
+      <div class="dataset-scroll" role="region" aria-label="Tabela dos registros analisados" tabindex="0">
         <table class="dataset-table" aria-describedby="dataset-description">
           <thead>
             <tr>
@@ -196,11 +196,15 @@
         <div>
           <span class="question">02</span>
           <h2>Qual a média de idade dos jogadores adeptos à pirataria?</h2>
-          <p>Cada círculo representa um usuário pirata com idade válida. A linha vertical indica a média de idade.</p>
+          <p>Cada círculo representa um usuário pirata com idade igual ou superior a 12 anos. Verde indica computador e laranja indica celular; a linha vertical indica a média.</p>
         </div>
         <img class="sec-icon" src="assets/yellow-bee-in-minecraft-so-cute-png.webp" alt="">
       </div>
       <div id="age-chart" class="chart chart-age"></div>
+      <div class="legend">
+        <span><i class="dot pc"></i> Computador</span>
+        <span><i class="dot mobile"></i> Celular</span>
+      </div>
       <div class="insight" id="age-insight"></div>
     </section>
 
@@ -246,7 +250,7 @@
         <div>
           <span class="question">03</span>
           <h2>Qual a relação entre usuários originais e “piratas”?</h2>
-          <p>A matriz contém um quadrado para cada registro, em sequência por idade crescente: primeiro todos os <strong>piratas</strong> (vermelhos), do mais novo ao mais velho; depois todos os <strong>originais</strong> (azuis), também do mais novo ao mais velho. Idades não informadas ficam ao final de cada grupo.</p>
+          <p>A matriz contém um quadrado para cada registro com idade ≥ 12 anos, em sequência por idade crescente: primeiro todos os <strong>piratas</strong> (vermelhos), do mais novo ao mais velho; depois todos os <strong>originais</strong> (azuis), também do mais novo ao mais velho.</p>
         </div>
         <img class="sec-icon" src="assets/creeper.webp" alt="">
       </div>
